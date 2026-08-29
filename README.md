@@ -67,17 +67,38 @@ administrativo em http://127.0.0.1:8000/admin/ (Usuários > Adicionar).
 python manage.py test
 ```
 
-## Próximos passos (deploy)
+## Deploy no Render (gratuito)
 
-O projeto usa SQLite, um único arquivo de banco de dados — ótimo para uso
-local. Para acessar o site de qualquer lugar (ex: do celular da loja), é
-necessário hospedar em algum serviço. Algumas opções com camada gratuita:
+O projeto já está pronto para produção: usa variáveis de ambiente para
+`SECRET_KEY`/`DEBUG`/`ALLOWED_HOSTS`, PostgreSQL via `DATABASE_URL` (com
+fallback para SQLite localmente), Whitenoise para servir arquivos estáticos,
+e Gunicorn como servidor. O arquivo `render.yaml` descreve toda a
+infraestrutura (web service + banco PostgreSQL gratuito).
 
-- [Render](https://render.com/)
-- [Railway](https://railway.app/)
-- [PythonAnywhere](https://www.pythonanywhere.com/)
+Passos:
 
-Em produção, também é recomendado trocar o SQLite por PostgreSQL (esses
-serviços costumam oferecer isso), configurar `DEBUG = False`, gerar uma nova
-`SECRET_KEY` e definir `ALLOWED_HOSTS` em `config/settings.py`. Isso fica
-para quando for feito o deploy.
+1. Crie uma conta gratuita em [render.com](https://render.com/) (pode
+   entrar com sua conta do GitHub).
+2. No dashboard do Render, clique em **New +** > **Blueprint**.
+3. Conecte o repositório `loja-manager` do GitHub.
+4. O Render vai ler o `render.yaml` automaticamente e propor a criação do
+   web service `loja-manager` + banco de dados `loja-manager-db` (plano
+   gratuito). Clique em **Apply**/**Create**.
+5. Aguarde o build (roda `build.sh`: instala dependências, coleta
+   estáticos, aplica migrações). Isso leva alguns minutos.
+6. Quando o deploy terminar, acesse a URL gerada pelo Render
+   (algo como `https://loja-manager.onrender.com`).
+7. Crie o primeiro usuário direto no servidor, pelo **Shell** do serviço no
+   dashboard do Render:
+
+   ```bash
+   python manage.py createsuperuser
+   ```
+
+Observações:
+- O plano gratuito do Render "dorme" o serviço após um tempo sem uso — o
+  primeiro acesso do dia pode demorar ~1 minuto para "acordar".
+- O banco de dados gratuito do Render é apagado após 90 dias de
+  inatividade da conta — não é indicado para produção de longo prazo sem
+  acompanhar isso; se isso virar um problema real, vale migrar para um
+  plano pago ou outro provedor de Postgres.
