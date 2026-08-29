@@ -1,0 +1,40 @@
+{% extends "loja/base.html" %}
+{% block title %}Nova venda{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Nova venda</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="row g-3 mb-3">
+        <div class="col-md-6">
+            <label class="form-label">Cliente (opcional)</label>
+            {{ form.cliente }}
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Forma de pagamento</label>
+            {{ form.forma_pagamento }}
+        </div>
+    </div>
+
+    <h2 class="h5">Itens</h2>
+    {{ formset.management_form }}
+    <table class="table">
+        <thead><tr><th>Produto</th><th>Quantidade</th><th>Remover</th></tr></thead>
+        <tbody>
+            {% for item_form in formset.forms %}
+            <tr>
+                <td>{{ item_form.produto }}</td>
+                <td>{{ item_form.quantidade }}</td>
+                <td>
+                    {% if item_form.instance.pk %}{{ item_form.DELETE }}{% endif %}
+                    {{ item_form.id }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-primary">Registrar venda</button>
+    <a href="{% url 'venda_list' %}" class="btn btn-outline-secondary">Cancelar</a>
+</form>
+{% endblock %}

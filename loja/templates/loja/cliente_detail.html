@@ -1,0 +1,53 @@
+{% extends "loja/base.html" %}
+{% block title %}{{ cliente.nome }}{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">{{ cliente.nome }}</h1>
+<p class="text-muted">{{ cliente.telefone }}</p>
+
+<div class="row">
+    <div class="col-md-7">
+        <h2 class="h5">Vendas fiado</h2>
+        <table class="table table-sm">
+            <thead><tr><th>Data</th><th>Total</th></tr></thead>
+            <tbody>
+                {% for venda in vendas_fiado %}
+                <tr><td>{{ venda.data|date:"d/m/Y H:i" }}</td><td>R$ {{ venda.total|floatformat:2 }}</td></tr>
+                {% empty %}
+                <tr><td colspan="2" class="text-muted">Nenhuma venda fiado.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2 class="h5 mt-4">Pagamentos recebidos</h2>
+        <table class="table table-sm">
+            <thead><tr><th>Data</th><th>Valor</th></tr></thead>
+            <tbody>
+                {% for pagamento in pagamentos %}
+                <tr><td>{{ pagamento.data|date:"d/m/Y H:i" }}</td><td>R$ {{ pagamento.valor|floatformat:2 }}</td></tr>
+                {% empty %}
+                <tr><td colspan="2" class="text-muted">Nenhum pagamento registrado.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="h5">Saldo devedor</h2>
+                <p class="fs-3 {% if cliente.saldo_devedor > 0 %}text-danger{% endif %}">
+                    R$ {{ cliente.saldo_devedor|floatformat:2 }}
+                </p>
+                <h3 class="h6">Registrar pagamento</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-2">
+                        <label class="form-label">Valor</label>
+                        {{ pagamento_form.valor }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Registrar pagamento</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

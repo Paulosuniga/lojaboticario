@@ -1,0 +1,43 @@
+{% extends "loja/base.html" %}
+{% block title %}Produto{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">{% if produto %}Editar produto{% else %}Novo produto{% endif %}</h1>
+
+<form method="post" class="row g-3">
+    {% csrf_token %}
+    <div class="col-md-6">
+        <label class="form-label">Nome</label>
+        {{ form.nome }}
+    </div>
+    <div class="col-md-6">
+        <label class="form-label">Marca</label>
+        {{ form.marca }}
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Preço de custo</label>
+        {{ form.preco_custo }}
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Preço de venda</label>
+        {{ form.preco_venda }}
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Estoque mínimo</label>
+        {{ form.estoque_minimo }}
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Quantidade em estoque</label>
+        {{ form.quantidade_estoque }}
+    </div>
+    <div class="col-md-4 d-flex align-items-end">
+        <div class="form-check">
+            {{ form.ativo }}
+            <label class="form-check-label">Ativo</label>
+        </div>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <a href="{% url 'produto_list' %}" class="btn btn-outline-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

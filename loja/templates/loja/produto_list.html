@@ -1,0 +1,37 @@
+{% extends "loja/base.html" %}
+{% block title %}Produtos{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3">Produtos</h1>
+    <a href="{% url 'produto_create' %}" class="btn btn-success">+ Novo produto</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Marca</th>
+            <th>Custo</th>
+            <th>Venda</th>
+            <th>Estoque</th>
+            <th>Ativo</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for produto in produtos %}
+        <tr class="{% if produto.estoque_baixo %}table-danger{% endif %}">
+            <td>{{ produto.nome }}</td>
+            <td>{{ produto.get_marca_display }}</td>
+            <td>R$ {{ produto.preco_custo|floatformat:2 }}</td>
+            <td>R$ {{ produto.preco_venda|floatformat:2 }}</td>
+            <td>{{ produto.quantidade_estoque }}</td>
+            <td>{% if produto.ativo %}Sim{% else %}Não{% endif %}</td>
+            <td><a href="{% url 'produto_edit' produto.pk %}" class="btn btn-sm btn-outline-primary">Editar</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="text-muted">Nenhum produto cadastrado.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

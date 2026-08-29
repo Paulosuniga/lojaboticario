@@ -1,0 +1,86 @@
+{% extends "loja/base.html" %}
+{% block title %}Relatórios{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Relatórios</h1>
+
+<form method="get" class="row g-2 mb-4 align-items-end">
+    <div class="col-auto">
+        <label class="form-label">De</label>
+        <input type="date" name="inicio" value="{{ inicio }}" class="form-control">
+    </div>
+    <div class="col-auto">
+        <label class="form-label">Até</label>
+        <input type="date" name="fim" value="{{ fim }}" class="form-control">
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </div>
+</form>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card text-bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Faturamento no período</h5>
+                <p class="fs-3">R$ {{ faturamento_total|floatformat:2 }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card text-bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Lucro no período</h5>
+                <p class="fs-3">R$ {{ lucro_total|floatformat:2 }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header">Mais vendidos</div>
+            <ul class="list-group list-group-flush">
+                {% for item in mais_vendidos %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>{{ item.produto__nome }}</span>
+                        <span class="badge bg-secondary">{{ item.total_quantidade }}</span>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item text-muted">Sem vendas no período.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header">Estoque baixo</div>
+            <ul class="list-group list-group-flush">
+                {% for produto in produtos_estoque_baixo %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>{{ produto.nome }}</span>
+                        <span class="badge bg-danger">{{ produto.quantidade_estoque }}</span>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item text-muted">Nenhum produto com estoque baixo.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header">Fiado em aberto</div>
+            <ul class="list-group list-group-flush">
+                {% for cliente in clientes_com_fiado %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <a href="{% url 'cliente_detail' cliente.pk %}">{{ cliente.nome }}</a>
+                        <span class="badge bg-warning text-dark">R$ {{ cliente.saldo_devedor|floatformat:2 }}</span>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item text-muted">Nenhum fiado em aberto.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

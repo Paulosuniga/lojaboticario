@@ -1,0 +1,52 @@
+{% extends "loja/base.html" %}
+{% block title %}Início{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Resumo de hoje</h1>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card text-bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Vendido hoje</h5>
+                <p class="card-text fs-3">R$ {{ total_hoje|floatformat:2 }}</p>
+                <p class="card-text">{{ qtd_vendas_hoje }} venda(s)</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">Estoque baixo</div>
+            <ul class="list-group list-group-flush">
+                {% for produto in produtos_estoque_baixo %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>{{ produto.nome }}</span>
+                        <span class="badge bg-danger">{{ produto.quantidade_estoque }} un.</span>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item text-muted">Nenhum produto com estoque baixo.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">Clientes com fiado em aberto</div>
+            <ul class="list-group list-group-flush">
+                {% for cliente in clientes_com_fiado %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <a href="{% url 'cliente_detail' cliente.pk %}">{{ cliente.nome }}</a>
+                        <span class="badge bg-warning text-dark">R$ {{ cliente.saldo_devedor|floatformat:2 }}</span>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item text-muted">Nenhum fiado em aberto.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<a href="{% url 'venda_create' %}" class="btn btn-success btn-lg">+ Nova venda</a>
+{% endblock %}
